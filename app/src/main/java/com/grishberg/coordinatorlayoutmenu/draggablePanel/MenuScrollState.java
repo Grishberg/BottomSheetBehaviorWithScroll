@@ -1,8 +1,9 @@
 package com.grishberg.coordinatorlayoutmenu.draggablePanel;
 
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.view.View;
+
+import com.grishberg.coordinatorlayoutmenu.widgets.BottomSheetBehavior;
 
 import java.util.ArrayList;
 

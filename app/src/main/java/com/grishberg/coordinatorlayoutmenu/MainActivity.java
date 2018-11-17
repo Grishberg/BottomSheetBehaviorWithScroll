@@ -1,7 +1,6 @@
 package com.grishberg.coordinatorlayoutmenu;
 
 import android.graphics.drawable.Drawable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +17,7 @@ import com.grishberg.coordinatorlayoutmenu.draggablePanel.items.MenuItemsFactory
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Omnibar;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Pip;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Widgets;
+import com.grishberg.coordinatorlayoutmenu.widgets.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
