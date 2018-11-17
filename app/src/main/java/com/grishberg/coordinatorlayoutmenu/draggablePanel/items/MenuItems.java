@@ -1,23 +1,15 @@
-package com.grishberg.coordinatorlayoutmenu.draggablePanel.items;
-
-import android.view.ViewGroup;
+package com.grishberg.coordinatorlayoutmenu.draggablePanel.items;;
 
 import java.util.List;
 
 public class MenuItems {
-    private final MenuItemsFactory menuItemsFactory;
-    private final ViewGroup parent;
+    private final MenuItemsAdapter itemsAdapter;
 
-    public MenuItems(MenuItemsFactory menuItemsFactory, ViewGroup parent) {
-        this.menuItemsFactory = menuItemsFactory;
-        this.parent = parent;
+    public MenuItems(MenuItemsAdapter itemsAdapter) {
+        this.itemsAdapter = itemsAdapter;
     }
 
     public void populateWithItems(List<MenuItem> items) {
-        for (int i = 0; i < items.size(); i++) {
-            MenuItem item = items.get(i);
-            MenuItemView itemView = menuItemsFactory.createMenuItemView(item);
-            itemView.addsToParent(parent);
-        }
+        itemsAdapter.populateWithItems(items);
     }
 }

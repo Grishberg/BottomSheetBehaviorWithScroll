@@ -33,6 +33,7 @@ import android.support.v4.view.AbsSavedState;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -46,8 +47,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-
-import android.support.design.R;
 
 /**
  * An interaction behavior plugin for a child view of {@link CoordinatorLayout} to make it work as a
@@ -201,6 +200,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     boolean touchingScrollingChild;
 
     private Map<View, Integer> importantForAccessibilityMap;
+    private boolean scrollDownWhenNestedScroll = true;
 
     public BottomSheetBehavior() {
     }
@@ -225,6 +225,14 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
         a.recycle();
         ViewConfiguration configuration = ViewConfiguration.get(context);
         maximumVelocity = configuration.getScaledMaximumFlingVelocity();
+    }
+
+    /**
+     * Allow scroll down when nested scrolled.
+     */
+    public void setScrollDownWhenNestedScroll(boolean scrollDownWhenNestedScroll) {
+        Log.d("MenuScroll", "setScrollDownWhenNestedScroll: " + scrollDownWhenNestedScroll);
+        this.scrollDownWhenNestedScroll = scrollDownWhenNestedScroll;
     }
 
     @Override
@@ -419,7 +427,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
                 setStateInternal(STATE_DRAGGING);
             }
         } else if (dy < 0) { // Downward
-            if (!target.canScrollVertically(-1)) {
+            if (!target.canScrollVertically(-1) && scrollDownWhenNestedScroll) {
                 if (newTop <= collapsedOffset || hideable) {
                     consumed[1] = dy;
                     ViewCompat.offsetTopAndBottom(child, -dy);

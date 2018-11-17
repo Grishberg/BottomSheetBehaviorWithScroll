@@ -1,23 +1,27 @@
 package com.grishberg.coordinatorlayoutmenu.draggablePanel;
 
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.items.MenuItems;
+import com.grishberg.coordinatorlayoutmenu.draggablePanel.items.MenuScroll;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Omnibar;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Pip;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Widgets;
 
 public class Menu {
     private final MenuItems menuItems;
+    private MenuScroll menuScroll;
     private final Widgets widgets;
     private final Omnibar omnibar;
     private final Pip pip;
     private MenuScrollState menuScrollState;
 
     public Menu(MenuItems menuItems,
+                MenuScroll menuScroll,
                 Widgets widgets,
                 Omnibar omnibar,
                 Pip pip,
                 MenuScrollState menuScrollState) {
         this.menuItems = menuItems;
+        this.menuScroll = menuScroll;
         this.widgets = widgets;
         this.omnibar = omnibar;
         this.pip = pip;

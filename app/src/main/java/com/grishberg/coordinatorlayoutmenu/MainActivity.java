@@ -2,22 +2,24 @@ package com.grishberg.coordinatorlayoutmenu;
 
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.Menu;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.MenuScrollState;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.items.MenuItem;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.items.MenuItems;
-import com.grishberg.coordinatorlayoutmenu.draggablePanel.items.MenuItemsFactory;
+import com.grishberg.coordinatorlayoutmenu.draggablePanel.items.MenuItemsAdapter;
+import com.grishberg.coordinatorlayoutmenu.draggablePanel.items.MenuScroll;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Omnibar;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Pip;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Widgets;
 import com.grishberg.coordinatorlayoutmenu.widgets.BottomSheetBehavior;
+import com.grishberg.coordinatorlayoutmenu.widgets.CustomRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BottomSheetBehavior<View> anchorBehavior;
+    private BottomSheetBehavior<View> behavior;
     private State state = new InitialState();
 
     @Override
@@ -33,35 +35,35 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        NestedScrollView scrollView = findViewById(R.id.bottomSheetPanel);
-        anchorBehavior = BottomSheetBehavior.from((View) scrollView);
+        behavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheetPanel));
 
-        anchorBehavior.setHideable(false);
-        anchorBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        behavior.setHideable(false);
+        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-        findViewById(R.id.topItemSpace).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onTap(v);
-            }
-        });
+        MenuScrollState menuScrollState = new MenuScrollState(behavior);
 
-        MenuScrollState menuScrollState = new MenuScrollState(anchorBehavior);
+        CustomRecyclerView rv = findViewById(R.id.itemsRecyclerView);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
+        rv.setLayoutManager(layoutManager);
+        MenuItemsAdapter adapter = new MenuItemsAdapter(this);
+        rv.setAdapter(adapter);
 
-        ViewGroup menuRoot = findViewById(R.id.itemsLayout);
-        MenuItemsFactory menuItemsFactory = new MenuItemsFactory(this, menuRoot);
-        MenuItems menuItems = new MenuItems(menuItemsFactory, menuRoot);
+        MenuItems menuItems = new MenuItems(adapter);
         menuItems.populateWithItems(createItems());
 
         View widgetsView = findViewById(R.id.widgetsPanel);
         View omnibarView = findViewById(R.id.omnibar);
         View pipView = findViewById(R.id.pip);
+
+        MenuScroll menuScroll = new MenuScroll(rv, behavior);
         Menu menu = new Menu(menuItems,
+                menuScroll,
                 new Widgets(widgetsView),
                 new Omnibar(omnibarView),
                 new Pip(pipView),
                 menuScrollState);
-        state = new CreatedState(menu, scrollView);
+        state = new CreatedState(menu);
+        rv.subscribeScrollEvents();
 
         WebView webView = findViewById(R.id.webContent);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<MenuItem> createItems() {
         ArrayList<MenuItem> result = new ArrayList<>();
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 30; i++) {
             String title = String.format(Locale.US, "item %d", i + 1);
             Drawable drawable = ContextCompat.getDrawable(this, android.R.drawable.ic_dialog_map);
             result.add(new MenuItem(title, drawable));
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onTap(View view) {
         state.onViewPortClicked();
-        anchorBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private class InitialState extends State {
@@ -94,11 +96,9 @@ public class MainActivity extends AppCompatActivity {
 
     private class CreatedState extends State implements Menu.NotConsumedBackPressDelegate {
         private final Menu menu;
-        private NestedScrollView scrollView;
 
-        CreatedState(Menu menu, NestedScrollView scrollView) {
+        CreatedState(Menu menu) {
             this.menu = menu;
-            this.scrollView = scrollView;
         }
 
         @Override
@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         void onViewPortClicked() {
-            scrollView.scrollTo(0, 0);
         }
     }
 
