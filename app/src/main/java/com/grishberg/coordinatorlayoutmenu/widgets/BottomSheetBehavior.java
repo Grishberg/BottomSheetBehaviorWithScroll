@@ -303,9 +303,14 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
             return false;
         }
         int action = event.getActionMasked();
+
         // Record the velocity
         if (action == MotionEvent.ACTION_DOWN) {
             reset();
+        }
+        if (state == STATE_SETTLING && (action == MotionEvent.ACTION_DOWN ||
+                action == MotionEvent.ACTION_MOVE)) {
+            return false;
         }
         if (velocityTracker == null) {
             velocityTracker = VelocityTracker.obtain();
