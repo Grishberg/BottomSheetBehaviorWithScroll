@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="peek_height">156dp</dimen>
     <dimen name="widgetsHeight">130dp</dimen>
+    <dimen name="topSpaceHeight">200dp</dimen>
+    <dimen name="menuHeight">430dp</dimen>
 </resources>

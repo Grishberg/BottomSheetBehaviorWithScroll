@@ -23,9 +23,9 @@ public class Menu {
         this.pip = pip;
         this.menuScrollState = menuScrollState;
 
-        menuScrollState.subscibeListener(widgets);
-        menuScrollState.subscibeListener(omnibar);
-        menuScrollState.subscibeListener(pip);
+        menuScrollState.subscribeListener(widgets);
+        menuScrollState.subscribeListener(omnibar);
+        menuScrollState.subscribeListener(pip);
     }
 
     public void onBackPressed(NotConsumedBackPressDelegate delegate) {

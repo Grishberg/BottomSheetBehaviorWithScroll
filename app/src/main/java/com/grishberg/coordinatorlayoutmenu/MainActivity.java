@@ -1,7 +1,6 @@
 package com.grishberg.coordinatorlayoutmenu;
 
 import android.graphics.drawable.Drawable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +17,7 @@ import com.grishberg.coordinatorlayoutmenu.draggablePanel.items.MenuItemsFactory
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Omnibar;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Pip;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Widgets;
+import com.grishberg.coordinatorlayoutmenu.widgets.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BottomSheetBehavior<View> anchorBehavior;
+    private BottomSheetBehavior behavior;
     private State state = new InitialState();
 
     @Override
@@ -34,19 +34,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         NestedScrollView scrollView = findViewById(R.id.bottomSheetPanel);
-        anchorBehavior = BottomSheetBehavior.from((View) scrollView);
+        behavior = BottomSheetBehavior.from((View) scrollView);
 
-        anchorBehavior.setHideable(false);
-        anchorBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        behavior.setHideable(false);
+        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-        findViewById(R.id.topItemSpace).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onTap(v);
-            }
-        });
-
-        MenuScrollState menuScrollState = new MenuScrollState(anchorBehavior);
+        MenuScrollState menuScrollState = new MenuScrollState(this, behavior);
+        menuScrollState.setup();
 
         ViewGroup menuRoot = findViewById(R.id.itemsLayout);
         MenuItemsFactory menuItemsFactory = new MenuItemsFactory(this, menuRoot);
@@ -65,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         WebView webView = findViewById(R.id.webContent);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("https://ya.ru");
+        webView.loadUrl("https://developer.android.com/studio/command-line/sdkmanager");
     }
 
     private List<MenuItem> createItems() {
@@ -85,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onTap(View view) {
         state.onViewPortClicked();
-        anchorBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private class InitialState extends State {

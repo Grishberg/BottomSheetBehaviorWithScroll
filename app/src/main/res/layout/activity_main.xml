@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -11,15 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <FrameLayout
-        android:id="@+id/pip"
-        android:layout_width="40dp"
-        android:layout_height="4dp"
-        android:alpha="0"
-        android:background="#00FFFF"
-        app:layout_anchor="@id/omnibar"
-        app:layout_anchorGravity="top|center"/>
-
     <include layout="@layout/menu_layout"/>
 
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>

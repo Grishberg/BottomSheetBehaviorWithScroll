@@ -1,20 +1,30 @@
 package com.grishberg.coordinatorlayoutmenu.draggablePanel;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.view.View;
+
+import com.grishberg.coordinatorlayoutmenu.R;
+import com.grishberg.coordinatorlayoutmenu.widgets.BottomSheetBehavior;
 
 import java.util.ArrayList;
 
 public class MenuScrollState {
     private ArrayList<ScrollStateChangedListener> listeners = new ArrayList<>();
+    private Context context;
     private BottomSheetBehavior<View> anchorBehavior;
 
-    public MenuScrollState(BottomSheetBehavior<View> anchorBehavior) {
+    public MenuScrollState(Context context, BottomSheetBehavior<View> anchorBehavior) {
+        this.context = context;
         this.anchorBehavior = anchorBehavior;
     }
 
-    public void subscibeListener(ScrollStateChangedListener listener) {
+    public void setup() {
+        anchorBehavior.setmUntouchableAreaOffset(
+                context.getResources().getDimensionPixelSize(R.dimen.topSpaceHeight));
+    }
+
+    public void subscribeListener(ScrollStateChangedListener listener) {
         if (listeners.isEmpty()) {
             anchorBehavior.setBottomSheetCallback(new BottomSheetCallbackListener());
         }
