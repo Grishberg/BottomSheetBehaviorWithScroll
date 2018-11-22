@@ -5,10 +5,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.webkit.WebView;
 
+import com.grishberg.coordinatorlayoutmenu.draggablePanel.ExpandableSnapHelper;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.Menu;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.MenuScrollState;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.items.MenuItem;
@@ -18,7 +18,6 @@ import com.grishberg.coordinatorlayoutmenu.draggablePanel.items.MenuScroll;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Omnibar;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Pip;
 import com.grishberg.coordinatorlayoutmenu.draggablePanel.panels.Widgets;
-import com.grishberg.coordinatorlayoutmenu.widgets.BottomSheetBehavior;
 import com.grishberg.coordinatorlayoutmenu.widgets.CustomRecyclerView;
 
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BottomSheetBehavior<View> behavior;
     private State state = new InitialState();
 
     @Override
@@ -35,15 +33,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        behavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheetPanel));
-
-        behavior.setHideable(false);
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-        MenuScrollState menuScrollState = new MenuScrollState(behavior);
-
         CustomRecyclerView rv = findViewById(R.id.itemsRecyclerView);
+        ExpandableSnapHelper snapHelper = new ExpandableSnapHelper();
+        snapHelper.attachToRecyclerView(rv);
+        MenuScrollState menuScrollState = new MenuScrollState(snapHelper);
+
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int i) {
+                return i == 0 ? 4 : 1;
+            }
+        });
         rv.setLayoutManager(layoutManager);
         MenuItemsAdapter adapter = new MenuItemsAdapter(this);
         rv.setAdapter(adapter);
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         View omnibarView = findViewById(R.id.omnibar);
         View pipView = findViewById(R.id.pip);
 
-        MenuScroll menuScroll = new MenuScroll(rv, behavior);
+        MenuScroll menuScroll = new MenuScroll(rv);
         Menu menu = new Menu(menuItems,
                 menuScroll,
                 new Widgets(widgetsView),
@@ -83,11 +84,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         state.onBackPressed();
-    }
-
-    public void onTap(View view) {
-        state.onViewPortClicked();
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private class InitialState extends State {

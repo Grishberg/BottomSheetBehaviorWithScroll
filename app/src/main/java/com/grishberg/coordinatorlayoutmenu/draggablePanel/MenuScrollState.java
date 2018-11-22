@@ -1,48 +1,24 @@
 package com.grishberg.coordinatorlayoutmenu.draggablePanel;
 
-import android.support.annotation.NonNull;
-import android.view.View;
-
-import com.grishberg.coordinatorlayoutmenu.widgets.BottomSheetBehavior;
-
 import java.util.ArrayList;
 
 public class MenuScrollState {
     private ArrayList<ScrollStateChangedListener> listeners = new ArrayList<>();
-    private BottomSheetBehavior<View> anchorBehavior;
+    private ExpandableSnapHelper snapHelper;
 
-    public MenuScrollState(BottomSheetBehavior<View> anchorBehavior) {
-        this.anchorBehavior = anchorBehavior;
+    public MenuScrollState(ExpandableSnapHelper snapHelper) {
+        this.snapHelper = snapHelper;
     }
 
     public void subscibeListener(ScrollStateChangedListener listener) {
         if (listeners.isEmpty()) {
-            anchorBehavior.setBottomSheetCallback(new BottomSheetCallbackListener());
+            //anchorBehavior.setBottomSheetCallback(new BottomSheetCallbackListener());
         }
         listeners.add(listener);
     }
 
     public void unsubscribeListener(ScrollStateChangedListener listener) {
         listeners.remove(listener);
-    }
-
-    private class BottomSheetCallbackListener extends BottomSheetBehavior.BottomSheetCallback {
-        @Override
-        public void onStateChanged(@NonNull View bottomSheet, int newState) {
-            switch (newState) {
-                case BottomSheetBehavior.STATE_COLLAPSED:
-                    notifyCollapsed();
-                    break;
-                case BottomSheetBehavior.STATE_EXPANDED:
-                    notifyExpanded();
-                    break;
-            }
-        }
-
-        @Override
-        public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            notifyOnSlide(slideOffset);
-        }
     }
 
     private void notifyOnSlide(float slideOffset) {

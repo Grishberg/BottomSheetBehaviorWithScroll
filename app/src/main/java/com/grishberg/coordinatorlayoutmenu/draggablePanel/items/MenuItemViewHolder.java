@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.grishberg.coordinatorlayoutmenu.R;
 
-public class MenuItemViewHolder extends RecyclerView.ViewHolder {
+public class MenuItemViewHolder extends AbsViewHolder {
     private final TextView titleView;
     private final ImageView iconView;
 
@@ -18,7 +18,8 @@ public class MenuItemViewHolder extends RecyclerView.ViewHolder {
         iconView = itemView.findViewById(R.id.menuIcon);
     }
 
-    void bindWithItem(MenuItem item) {
+    @Override
+    public void bindWithItem(MenuItem item) {
         item.drawIcon(iconView);
         item.writeText(titleView);
     }
